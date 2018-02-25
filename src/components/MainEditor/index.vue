@@ -6,7 +6,11 @@
         <i class="el-icon-success"></i>
         <span slot="title">Make</span>
       </el-menu-item>
-      <el-menu-item index="empty">Empty</el-menu-item>
+      <el-menu-item class="make" @click="save" index="null5">
+        <i class="el-icon-upload2"></i>
+        <span slot="title">Save</span>
+      </el-menu-item>
+      <!-- <el-menu-item index="empty">Empty</el-menu-item> -->
       <el-submenu index="null">
         <template slot="title">
           <i class="el-icon-menu"></i>
@@ -109,7 +113,9 @@ export default {
           });
           return;
         }
-        this.dData = res.data.data;
+        this.dData = res.data.data
+        this.nodes = this.dData.nodes
+        this.links = this.dData.links
         // this.lines = this.groupData.lines
         axios
           .post("/api/group/getGroup", {
@@ -234,8 +240,8 @@ export default {
       this.nodes.push(getObject(type));
     },
     addNodeObj(obj) {
-      obj.x = 50
-      obj.y = 50
+      obj.x = 50;
+      obj.y = 50;
       this.nodes.push(obj);
     },
     removeNode(obj) {
@@ -273,6 +279,28 @@ export default {
         });
       });
       console.log(generate(this.nodes));
+    },
+    save() {
+      axios
+        .post("/api/data/updateData", {
+          token: this.$store.state.token,
+          data: this.dData
+        })
+        .then(res => {
+          if (!res.data.success) {
+            this.$notify({
+              title: "Warning",
+              message: res.data.error,
+              type: "warning"
+            });
+            return;
+          }
+          this.$notify({
+            title: "Info",
+            message: "Saved",
+            type: "info"
+          });
+        });
     }
   },
   data() {
