@@ -9,6 +9,13 @@ export default function getObject(st) {
     case "switch":
       return new NodeObj(uuid1(), "Switch", "switch", 50, 50, [
         {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
           type: "5V",
           name: "5V",
           x: 0,
@@ -18,13 +25,6 @@ export default function getObject(st) {
         {
           type: "GND",
           name: "GND",
-          x: 0,
-          y: 0,
-          inGroupEditor: true
-        },
-        {
-          type: "pin",
-          name: "Pin",
           x: 0,
           y: 0,
           inGroupEditor: true
@@ -42,19 +42,19 @@ export default function getObject(st) {
     case "speaker1":
       return new NodeObj(uuid1(), "Speaker 350", "speaker1", 50, 50, [
         {
-          type: "GND",
-          name: "GND",
-          x: 0,
-          y: 0,
-          inGroupEditor: true
-        },
-        {
           type: "pin",
           name: "Pin",
           x: 0,
           y: 0,
           inGroupEditor: true,
           speaker: true
+        },
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
         },
         {
           type: "bool",
@@ -66,18 +66,18 @@ export default function getObject(st) {
     case "speaker2":
       return new NodeObj(uuid1(), "Speaker 392", "speaker2", 50, 50, [
         {
-          type: "GND",
-          name: "GND",
-          x: 0,
-          y: 0,
-          inGroupEditor: true
-        },
-        {
           type: "pin",
           name: "Pin",
           x: 0,
           y: 0,
           speaker: true,
+          inGroupEditor: true
+        },
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
           inGroupEditor: true
         },
         {
@@ -91,18 +91,18 @@ export default function getObject(st) {
     case "speaker3":
       return new NodeObj(uuid1(), "Speaker 440", "speaker3", 50, 50, [
         {
-          type: "GND",
-          name: "GND",
-          x: 0,
-          y: 0,
-          inGroupEditor: true
-        },
-        {
           type: "pin",
           name: "Pin",
           x: 0,
           y: 0,
           speaker: true,
+          inGroupEditor: true
+        },
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
           inGroupEditor: true
         },
         {
@@ -116,18 +116,18 @@ export default function getObject(st) {
     case "speaker4":
       return new NodeObj(uuid1(), "Speaker 494", "speaker4", 50, 50, [
         {
-          type: "GND",
-          name: "GND",
-          x: 0,
-          y: 0,
-          inGroupEditor: true
-        },
-        {
           type: "pin",
           name: "Pin",
           x: 0,
           y: 0,
           speaker: true,
+          inGroupEditor: true
+        },
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
           inGroupEditor: true
         },
         {
@@ -141,15 +141,15 @@ export default function getObject(st) {
     case "lamp":
       return new NodeObj(uuid1(), "Lamp", "lamp", 50, 50, [
         {
-          type: "GND",
-          name: "GND",
+          type: "pin",
+          name: "Pin",
           x: 0,
           y: 0,
           inGroupEditor: true
         },
         {
-          type: "pin",
-          name: "Pin",
+          type: "GND",
+          name: "GND",
           x: 0,
           y: 0,
           inGroupEditor: true

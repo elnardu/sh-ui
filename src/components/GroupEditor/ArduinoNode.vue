@@ -187,7 +187,8 @@ export default {
         axios
           .post("/api/data/createData", {
             token: this.$store.state.token,
-            group: this.groupId
+            group: this.groupId,
+            arduinoid: this.nodeobj.id
           })
           .then(res => {
             if (!res.data.success) {

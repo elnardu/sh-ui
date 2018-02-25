@@ -45,6 +45,20 @@
         <el-menu-item index="lt"> &lt; </el-menu-item>
         <el-menu-item index="lte"> &lt;= </el-menu-item>
       </el-submenu>
+      <el-submenu index="null40">
+        <template slot="title">
+          <i class="el-icon-menu"></i>
+          <span slot="title">Inputs</span>
+        </template>
+        <el-menu-item index="null42" v-for="i in group.inputs" :key="i.id" @click="addNodeObj(i)"> {{i.name}} </el-menu-item>
+      </el-submenu>
+      <el-submenu index="null57">
+        <template slot="title">
+          <i class="el-icon-menu"></i>
+          <span slot="title">Outputs</span>
+        </template>
+        <el-menu-item index="null42" v-for="i in group.outputs" v-if="i.inputs[0].arduinoid === dData.arduinoid" :key="i.id" @click="addNodeObj(i)"> {{i.name}} </el-menu-item>
+      </el-submenu>
     </el-menu>
   </el-aside>
     <el-main>
@@ -68,16 +82,15 @@
 <script>
 import NodeObj from "./NodeObj.js";
 import Node from "./Node.vue";
-import getObject from "./NodeTemplates"
+import getObject from "./NodeTemplates";
 
 import generate from "./StringBuilder";
 
 import SVG from "svg.js";
 import axios from "axios";
 
-
 export default {
-  props: ['id'],
+  props: ["id"],
   components: {
     Node
   },
@@ -98,6 +111,23 @@ export default {
         }
         this.dData = res.data.data;
         // this.lines = this.groupData.lines
+        axios
+          .post("/api/group/getGroup", {
+            token: this.$store.state.token,
+            id: this.dData.group
+          })
+          .then(res => {
+            if (!res.data.success) {
+              this.$notify({
+                title: "Warning",
+                message: res.data.error,
+                type: "warning"
+              });
+              return;
+            }
+            this.group = res.data.group;
+            // this.lines = this.groupData.lines
+          });
       });
     this.svg = SVG("svg").size("100%", "100%");
     this.draw();
@@ -200,8 +230,13 @@ export default {
       this.draw();
     },
     addNode(type) {
-      if (type.includes("null")) return
+      if (type.includes("null")) return;
       this.nodes.push(getObject(type));
+    },
+    addNodeObj(obj) {
+      obj.x = 50
+      obj.y = 50
+      this.nodes.push(obj);
     },
     removeNode(obj) {
       // console.log(obj)
@@ -227,16 +262,16 @@ export default {
         e.to.fid = e.from.id;
       });
       this.nodes.forEach(e => {
-        e.outputsArr = []
+        e.outputsArr = [];
         e.outputs.forEach(out => {
-          e.outputsArr.push(out.id)
-        })
+          e.outputsArr.push(out.id);
+        });
 
-        e.inputsArr = []
+        e.inputsArr = [];
         e.inputs.forEach(out => {
-          e.inputsArr.push(out.fid)
-        })
-      })
+          e.inputsArr.push(out.fid);
+        });
+      });
       console.log(generate(this.nodes));
     }
   },
@@ -245,7 +280,8 @@ export default {
       nodes: [],
       lines: [],
       dragging: {},
-      dData: {}
+      dData: {},
+      group: {}
     };
   }
 };
@@ -267,7 +303,7 @@ export default {
   z-index: 5;
 }
 /* .make { */
-  /* background: #409EFF;
+/* background: #409EFF;
   color: white; */
 /* } */
 .main {
