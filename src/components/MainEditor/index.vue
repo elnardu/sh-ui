@@ -73,12 +73,32 @@ import getObject from "./NodeTemplates"
 import generate from "./StringBuilder";
 
 import SVG from "svg.js";
+import axios from "axios";
+
 
 export default {
+  props: ['id'],
   components: {
     Node
   },
   mounted() {
+    axios
+      .post("/api/data/getData", {
+        token: this.$store.state.token,
+        id: this.id
+      })
+      .then(res => {
+        if (!res.data.success) {
+          this.$notify({
+            title: "Warning",
+            message: res.data.error,
+            type: "warning"
+          });
+          return;
+        }
+        this.dData = res.data.data;
+        // this.lines = this.groupData.lines
+      });
     this.svg = SVG("svg").size("100%", "100%");
     this.draw();
   },
@@ -224,7 +244,8 @@ export default {
     return {
       nodes: [],
       lines: [],
-      dragging: {}
+      dragging: {},
+      dData: {}
     };
   }
 };

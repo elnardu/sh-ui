@@ -2,55 +2,53 @@
 <el-container class="main">
   <el-aside width="200px" style="background-color: rgb(238, 241, 246)">
     <el-menu active-text-color="#303133" @select="addNode" index="null">
-      <el-menu-item class="make" @click="make" index="null1">
+      <!-- <el-menu-item class="make" @click="make" index="null1">
         <i class="el-icon-success"></i>
         <span slot="title">Make</span>
+      </el-menu-item> -->
+      <el-menu-item class="make" @click="save" index="null5">
+        <i class="el-icon-upload2"></i>
+        <span slot="title">Save</span>
       </el-menu-item>
       <el-menu-item index="null4" @click="addArduino">Add Arduino</el-menu-item>
       <el-submenu index="null">
         <template slot="title">
           <i class="el-icon-menu"></i>
-          <span slot="title">Math</span>
+          <span slot="title">Inputs</span>
         </template>
-        <el-menu-item index="add">Addition</el-menu-item>
-        <el-menu-item index="sub">Subtraction</el-menu-item>
-        <el-menu-item index="mul">Multiplication</el-menu-item>
-        <el-menu-item index="div">Division</el-menu-item>
+        <!-- <el-menu-item index="button">Button</el-menu-item> -->
+        <el-menu-item index="switch">Switch</el-menu-item>
       </el-submenu>
       <el-submenu index="null2">
         <template slot="title">
           <i class="el-icon-menu"></i>
-          <span slot="title">Constants</span>
+          <span slot="title">Outputs</span>
         </template>
-        <el-menu-item index="int">Integer</el-menu-item>
-        <el-menu-item index="booltrue">Boolean True</el-menu-item>
-        <el-menu-item index="boolfalse">Boolean False</el-menu-item>
-      </el-submenu>
-      <el-submenu index="null3">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          <span slot="title">Logic</span>
-        </template>
-        <el-menu-item index="and">AND</el-menu-item>
-        <el-menu-item index="or">OR</el-menu-item>
-        <el-menu-item index="not">NOT</el-menu-item>
-      </el-submenu>
-      <el-submenu index="null4">
-        <template slot="title">
-          <i class="el-icon-menu"></i>
-          <span slot="title">Comparisons</span>
-        </template>
-        <el-menu-item index="gt"> &gt; </el-menu-item>
-        <el-menu-item index="gte"> &gt;= </el-menu-item>
-        <el-menu-item index="lt"> &lt; </el-menu-item>
-        <el-menu-item index="lte"> &lt;= </el-menu-item>
+        <el-menu-item index="speaker1">Speaker 350</el-menu-item>
+        <el-menu-item index="speaker2">Speaker 392</el-menu-item>
+        <el-menu-item index="speaker3">Speaker 440</el-menu-item>
+        <el-menu-item index="speaker4">Speaker 494</el-menu-item>
+        <el-menu-item index="lamp">Lamp</el-menu-item>
       </el-submenu>
     </el-menu>
   </el-aside>
     <el-main>
       <div id="svg"></div>
       <div id="editor">
-        <ArduinoNode v-for="n in arduinos"
+        <ArduinoNode v-for="n in groupData.arduinos"
+        :nodeobj="n"
+        :key="n.id"
+        @redraw="draw"
+        @startDrag="startDrag"
+        @endDrag="endDrag"
+        @removeLine="removeLine"
+        @removeNode="removeNode"
+        @save="save"
+        @removeArduino="removeArduino"
+        :groupId="groupData._id"
+        />
+
+        <Node v-for="n in groupData.inputs"
         :nodeobj="n"
         :key="n.id"
         @redraw="draw"
@@ -59,7 +57,7 @@
         @removeLine="removeLine"
         @removeNode="removeNode"/>
 
-        <Node v-for="n in nodes"
+        <Node v-for="n in groupData.outputs"
         :nodeobj="n"
         :key="n.id"
         @redraw="draw"
@@ -108,6 +106,7 @@ export default {
           return;
         }
         this.groupData = res.data.group;
+        // this.lines = this.groupData.lines
       });
 
     this.svg = SVG("svg").size("100%", "100%");
@@ -138,7 +137,7 @@ export default {
         // let line = this.svg.path("M" + l.from.x + " " + l.from.y + "L" + l.to.x + " " + l.to.y)
 
         line.stroke({
-          color: this.getColor(l.from.type),
+          color: "rgb(211, 84, 0)",
           width: 5,
           linecap: "round"
         });
@@ -152,15 +151,22 @@ export default {
     },
     endDrag(obj) {
       if (Object.keys(this.dragging).length === 0) return;
+      if (obj.speaker && this.dragging.name[0] !== '~') {
+        this.$notify.error({
+          title: "Error",
+          message: "Speakers can be only connected to pins starting with '~'"
+        });
+        return
+      }
       if (obj.type !== this.dragging.type) {
         this.$notify.error({
           title: "Error",
           message: "Input type does not match output type"
         });
       } else {
-        this.lines = this.lines.filter((e, i) => {
-          return e.to.id !== obj.id;
-        });
+        // this.lines = this.lines.filter((e, i) => {
+        //   return e.to.id !== obj.id;
+        // });
         this.lines.push({
           from: this.dragging,
           to: obj
@@ -183,7 +189,7 @@ export default {
         e.y
       ]);
       line.stroke({
-        color: this.getColor(this.dragging.type),
+        color: "rgb(211, 84, 0)",
         width: 5,
         linecap: "round"
       });
@@ -212,7 +218,8 @@ export default {
     },
     addNode(type) {
       if (type.includes("null")) return;
-      this.nodes.push(getObject(type));
+      if (type.includes("switch")) this.groupData.inputs.push(getObject(type));
+      if (type.includes("speaker") || type.includes("lamp")) this.groupData.outputs.push(getObject(type));
     },
     removeNode(obj) {
       // console.log(obj)
@@ -227,7 +234,11 @@ export default {
         });
       });
 
-      this.nodes = this.nodes.filter((e, i) => {
+      this.groupData.inputs = this.groupData.inputs.filter((e, i) => {
+        return e.id !== obj.id;
+      });
+
+      this.groupData.outputs = this.groupData.outputs.filter((e, i) => {
         return e.id !== obj.id;
       });
 
@@ -251,10 +262,46 @@ export default {
       console.log(generate(this.nodes));
     },
     addArduino() {
-      this.arduinos.push({
+      this.groupData.arduinos.push({
         x: 50,
         y: 50,
         id: uuid1()
+      });
+    },
+    removeArduino(id) {
+      this.groupData.arduinos = this.groupData.arduinos.filter(e => {
+        return e.id !== id
+      })
+    },
+    save() {
+      this.groupData.lines = this.lines
+
+      this.lines.forEach(e => {
+        if (e.to.type === "pin") {
+          e.to.pinnumber = e.from.name[0] == "~" ? e.from.name.slice(1) : e.from.name;
+          e.to.arduinoid = e.from.id;
+        }
+      })
+
+      axios
+      .post("/api/group/updateGroup", {
+        token: this.$store.state.token,
+        group: this.groupData
+      })
+      .then(res => {
+        if (!res.data.success) {
+          this.$notify({
+            title: "Warning",
+            message: res.data.error,
+            type: "warning"
+          });
+          return;
+        }
+        this.$notify({
+            title: "Info",
+            message: "Saved",
+            type: "info"
+          });
       });
     }
   },
@@ -264,7 +311,10 @@ export default {
       lines: [],
       arduinos: [],
       dragging: {},
-      groupData: {}
+      groupData: {
+        arduinos: [],
+        inputs: []
+      }
     };
   }
 };

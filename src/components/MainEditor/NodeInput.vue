@@ -1,5 +1,5 @@
 <template>
-  <div class="input">
+  <div class="input" v-if="!obj.inGroupEditor">
     <el-tooltip :content="tooltiptext" placement="right">
       <div class="circle" :style="style" ref="circle" @mouseup="endDrag" @click="click"></div>
     </el-tooltip>
@@ -11,8 +11,11 @@
   export default {
     props: ['obj'],
     mounted() {
-      this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
-      this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
+      if (!this.obj.inGroupEditor) {
+
+        this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
+        this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
+      }
     },
     data() {
       return {

@@ -1,9 +1,8 @@
 <template>
-  <div class="output">
-    <div v-if="basic">{{obj.name}}</div>
-    <el-input v-if="this.obj.name === 'int'" placeholder="Integer" class="input" v-model.number="obj.payload"></el-input>
-    <el-tooltip :content="tooltiptext" placement="left">
-      <div class="circle" :style="style" ref="circle" @mousedown="startDrag"></div>
+  <div class="output" v-if="obj.inGroupEditor">
+    <div>{{obj.name}}</div>
+    <el-tooltip content="Pin" placement="left">
+      <div class="circle" style="background-color: #d35400" ref="circle" @mousedown="startDrag"></div>
     </el-tooltip>
   </div>
 </template>
@@ -12,55 +11,14 @@
   export default {
     props: ['obj'],
     mounted() {
-      if (this.obj.name === "int") {
-        this.obj.payload = 0
-        this.basic = false
-      }
-
-      this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
-      this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
-    },
-    data() {
-      return {
-        basic: true
-      }
-    },
-    computed: {
-      style() {
-        let color = ""
-        switch(this.obj.type) {
-          case "int":
-            color = "#3498db"
-            break
-          case "bool":
-            color = "#2ecc71"
-            break
-        }
-
-        return {
-          "background-color": color
-        }
-      },
-      tooltiptext() {
-        switch(this.obj.type) {
-          case "int":
-            return "Integer value"
-            break
-          case "bool":
-            return "Boolean value"
-            break
-        }
+      if (this.obj.inGroupEditor) {
+        this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
+        this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
       }
     },
     methods: {
       startDrag() {
         this.$emit("startDrag", this.obj)
-      },
-      setTrue() {
-        this.obj.payload = true
-      },
-      setFalse() {
-        this.obj.payload = false
       }
     }
   }
@@ -83,7 +41,7 @@
 .output {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   flex-direction: row;
   font-size: 1em;
   padding: 3px;

@@ -17,10 +17,11 @@
             <NodeOutput v-for="pin in pinsRight" :key="pin.name" :obj="pin" @startDrag="startDrag"/>
           </el-col>
         </el-row>
-        <!-- <div class="line" v-if="nodeobj.inputs.length != 0"></div>
-        <NodeOutput v-for="o in nodeobj.outputs" :key="o.name" :obj="o" @startDrag="startDrag"/> -->
         <div class="line"></div>
-        <el-button type="secondary" icon="el-icon-close" size="mini" @click="removeNode" class="button"></el-button>
+        <el-button-group style="width: 100%">
+          <el-button type="secondary" icon="el-icon-zoom-in" size="mini" @click="openEditor" class="button"></el-button>
+          <el-button type="secondary" icon="el-icon-close" size="mini" @click="removeArduino" class="button"></el-button>
+        </el-button-group>
       </div>
     </div>
 </template>
@@ -28,8 +29,10 @@
 <script>
 import NodeInput from "./NodeInput";
 import NodeOutput from "./NodeOutput";
+import axios from "axios";
+
 export default {
-  props: ["nodeobj"],
+  props: ["nodeobj", "groupId"],
   components: {
     NodeInput,
     NodeOutput
@@ -58,45 +61,87 @@ export default {
       ],
       pinsRight: [
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "13"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "12"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~11"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~10"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~9"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "8"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "7"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~6"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~5"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "4"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "~3"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "2"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "1"
         },
         {
+          type: "pin",
+          id: this.nodeobj.id,
+          inGroupEditor: true,
           name: "0"
         }
       ]
@@ -116,14 +161,10 @@ export default {
       this.nodeobj.x += e.movementX;
       this.nodeobj.y += e.movementY;
 
-      // this.nodeobj.inputs.forEach(o => {
-      //   o.x += e.movementX;
-      //   o.y += e.movementY;
-      // });
-      // this.nodeobj.outputs.forEach(o => {
-      //   o.x += e.movementX;
-      //   o.y += e.movementY;
-      // });
+      this.pinsRight.forEach(o => {
+        o.x += e.movementX;
+        o.y += e.movementY;
+      });
       this.$emit("redraw");
     },
     startDrag(obj) {
@@ -137,6 +178,34 @@ export default {
     },
     removeNode() {
       this.$emit("removeNode", this.nodeobj);
+    },
+    openEditor() {
+      this.$emit("save");
+      if (this.nodeobj.dataId)
+        this.$router.push(`/editor/${this.nodeobj.dataId}`);
+      else {
+        axios
+          .post("/api/data/createData", {
+            token: this.$store.state.token,
+            group: this.groupId
+          })
+          .then(res => {
+            if (!res.data.success) {
+              this.$notify({
+                title: "Warning",
+                message: res.data.error,
+                type: "warning"
+              });
+              return;
+            }
+            this.nodeobj.dataId = res.data.id;
+            this.$emit("save");
+            this.$router.push(`/editor/${this.nodeobj.dataId}`)
+          });
+      }
+    },
+    removeArduino() {
+      this.$emit("removeArduino", this.nodeobj.id);
     }
   },
   computed: {
@@ -188,7 +257,7 @@ export default {
   padding: 5px;
 }
 .button {
-  width: 100%;
+  width: 50%;
 }
 .line {
   display: box;

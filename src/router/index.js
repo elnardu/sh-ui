@@ -32,9 +32,10 @@ var router = new Router({
       meta: { requiresLogin: true }
     },
     {
-      path: '/editor',
+      path: '/editor/:id',
       name: 'MainEditor',
       component: MainEditor,
+      props: true,
       meta: { requiresLogin: true }
     },
     {

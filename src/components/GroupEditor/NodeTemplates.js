@@ -6,88 +6,162 @@ let uuid1 = () => uuid().slice(0, 6)
 
 export default function getObject(st) {
   switch (st) {
-    case "empty":
-      return new NodeObj(uuid1(), "empty", "none", 50, 50, [
+    case "switch":
+      return new NodeObj(uuid1(), "Switch", "switch", 50, 50, [
         {
-          type: "int",
-          name: "in1",
+          type: "5V",
+          name: "5V",
           x: 0,
           y: 0,
-          id: uuid1()
+          inGroupEditor: true
+        },
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        }
+      ], [
+          {
+            type: "bool",
+            name: "Out",
+            x: 0,
+            y: 0,
+            inGroupEditor: false,
+            id: uuid1()
+          }
+        ])
+    case "speaker1":
+      return new NodeObj(uuid1(), "Speaker 350", "speaker1", 50, 50, [
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          inGroupEditor: true,
+          speaker: true
         },
         {
           type: "bool",
-          name: "in2",
+          name: "On/Off",
           x: 0,
-          y: 0,
-          id: uuid1()
+          y: 0
         }
-      ], [
-          {
-            type: "int",
-            name: "out1",
-            x: 0,
-            y: 0,
-            id: null
-          },
-          {
-            type: "bool",
-            name: "out2",
-            x: 0,
-            y: 0,
-            id: null
-          }
-        ])
-    case "add":
-      return new NodeObj(uuid1(), "Add", "add", 50, 50, [
+      ], [])
+    case "speaker2":
+      return new NodeObj(uuid1(), "Speaker 392", "speaker2", 50, 50, [
         {
-          type: "int",
-          name: "a",
+          type: "GND",
+          name: "GND",
           x: 0,
           y: 0,
-          id: uuid1()
+          inGroupEditor: true
         },
         {
-          type: "int",
-          name: "b",
+          type: "pin",
+          name: "Pin",
           x: 0,
           y: 0,
-          id: uuid1()
-        }
-      ], [
-          {
-            type: "int",
-            name: "a+b",
-            x: 0,
-            y: 0,
-            id: uuid1()
-          }
-        ])
-    case "sub":
-      return new NodeObj(uuid1(), "Sub", "sub", 50, 50, [
-        {
-          type: "int",
-          name: "a",
-          x: 0,
-          y: 0,
-          id: uuid1()
+          speaker: true,
+          inGroupEditor: true
         },
         {
-          type: "int",
-          name: "b",
+          type: "bool",
+          name: "On/Off",
           x: 0,
           y: 0,
           id: uuid1()
         }
-      ], [
-          {
-            type: "int",
-            name: "a-b",
-            x: 0,
-            y: 0,
-            id: uuid1()
-          }
-        ])
+      ], [])
+    case "speaker3":
+      return new NodeObj(uuid1(), "Speaker 440", "speaker3", 50, 50, [
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          speaker: true,
+          inGroupEditor: true
+        },
+        {
+          type: "bool",
+          name: "On/Off",
+          x: 0,
+          y: 0,
+          id: uuid1()
+        }
+      ], [])
+    case "speaker4":
+      return new NodeObj(uuid1(), "Speaker 494", "speaker4", 50, 50, [
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          speaker: true,
+          inGroupEditor: true
+        },
+        {
+          type: "bool",
+          name: "On/Off",
+          x: 0,
+          y: 0,
+          id: uuid1()
+        }
+      ], [])
+    case "lamp":
+      return new NodeObj(uuid1(), "Lamp", "lamp", 50, 50, [
+        {
+          type: "GND",
+          name: "GND",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "pin",
+          name: "Pin",
+          x: 0,
+          y: 0,
+          inGroupEditor: true
+        },
+        {
+          type: "bool",
+          name: "On/Off",
+          x: 0,
+          y: 0,
+          id: uuid1()
+        }
+      ], [])
     case "mul":
       return new NodeObj(uuid1(), "Mul", "mul", 50, 50, [
         {

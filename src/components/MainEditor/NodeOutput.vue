@@ -1,5 +1,5 @@
 <template>
-  <div class="output">
+  <div class="output" v-if="!obj.inGroupEditor">
     <div v-if="basic">{{obj.name}}</div>
     <el-input v-if="this.obj.name === 'int'" placeholder="Integer" class="input" v-model.number="obj.payload"></el-input>
     <el-tooltip :content="tooltiptext" placement="left">
@@ -17,8 +17,10 @@
         this.basic = false
       }
 
-      this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
-      this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
+      if (!this.obj.inGroupEditor) {
+        this.obj.x = this.$refs.circle.getBoundingClientRect().x + 10
+        this.obj.y = this.$refs.circle.getBoundingClientRect().y + 10
+      }
     },
     data() {
       return {
