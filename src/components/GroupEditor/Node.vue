@@ -10,7 +10,6 @@
         <div class="line" v-if="nodeobj.outputs.length != 0"></div>
         <el-button type="secondary" icon="el-icon-close" size="mini" @click="removeNode" class="button"></el-button>
       </div>
-      <!-- <div v-if="nodeobj.i">{{nodeobj.i}}</div> -->
     </div>
 </template>
 

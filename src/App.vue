@@ -2,13 +2,14 @@
   <el-container id="app">
     <el-header>
       <el-menu mode="horizontal" :default-active="$route.path" :router="true" class="el-menu-demo menu">
-        <el-menu-item index="/">Editor</el-menu-item>
+        <!-- <el-menu-item index="/editor" v-if="$store.state.logged">Editor</el-menu-item> -->
+        <el-menu-item index="/groups" v-if="$store.state.logged">Groups</el-menu-item>
+        <el-menu-item index="/login" v-if="!$store.state.logged">Login</el-menu-item>
+        <el-menu-item index="/register" v-if="!$store.state.logged">Register</el-menu-item>
         <el-menu-item index="/about">About</el-menu-item>
       </el-menu>
     </el-header>
-    <el-main class="main">
-      <router-view/>
-    </el-main>
+    <router-view/>
   </el-container>
 </template>
 
@@ -34,10 +35,6 @@ body, html {
 }
 .menu {
   display: flex;
-  justify-content: flex-end;
-}
-.main {
-  height: 100%;
-  width: 100%;
+  justify-content: flex-start;
 }
 </style>

@@ -6,7 +6,7 @@
         <i class="el-icon-success"></i>
         <span slot="title">Make</span>
       </el-menu-item>
-      <el-menu-item index="empty">Empty</el-menu-item>
+      <el-menu-item index="null4" @click="addArduino">Add Arduino</el-menu-item>
       <el-submenu index="null">
         <template slot="title">
           <i class="el-icon-menu"></i>
@@ -50,7 +50,14 @@
     <el-main>
       <div id="svg"></div>
       <div id="editor">
-        <!-- <AddButton @addNode="addNode"/> -->
+        <ArduinoNode v-for="n in arduinos"
+        :nodeobj="n"
+        :key="n.id"
+        @redraw="draw"
+        @startDrag="startDrag"
+        @endDrag="endDrag"
+        @removeLine="removeLine"
+        @removeNode="removeNode"/>
 
         <Node v-for="n in nodes"
         :nodeobj="n"
@@ -68,17 +75,41 @@
 <script>
 import NodeObj from "./NodeObj.js";
 import Node from "./Node.vue";
-import getObject from "./NodeTemplates"
+import getObject from "./NodeTemplates";
+import ArduinoNode from "./ArduinoNode";
 
 import generate from "./StringBuilder";
 
+import uuid from "uuid/v4";
+let uuid1 = () => uuid().slice(0, 6);
+
 import SVG from "svg.js";
+import axios from "axios";
 
 export default {
+  props: ["id"],
   components: {
-    Node
+    Node,
+    ArduinoNode
   },
   mounted() {
+    axios
+      .post("/api/group/getGroup", {
+        token: this.$store.state.token,
+        id: this.id
+      })
+      .then(res => {
+        if (!res.data.success) {
+          this.$notify({
+            title: "Warning",
+            message: res.data.error,
+            type: "warning"
+          });
+          return;
+        }
+        this.groupData = res.data.group;
+      });
+
     this.svg = SVG("svg").size("100%", "100%");
     this.draw();
   },
@@ -180,7 +211,7 @@ export default {
       this.draw();
     },
     addNode(type) {
-      if (type.includes("null")) return
+      if (type.includes("null")) return;
       this.nodes.push(getObject(type));
     },
     removeNode(obj) {
@@ -207,24 +238,33 @@ export default {
         e.to.fid = e.from.id;
       });
       this.nodes.forEach(e => {
-        e.outputsArr = []
+        e.outputsArr = [];
         e.outputs.forEach(out => {
-          e.outputsArr.push(out.id)
-        })
+          e.outputsArr.push(out.id);
+        });
 
-        e.inputsArr = []
+        e.inputsArr = [];
         e.inputs.forEach(out => {
-          e.inputsArr.push(out.fid)
-        })
-      })
+          e.inputsArr.push(out.fid);
+        });
+      });
       console.log(generate(this.nodes));
+    },
+    addArduino() {
+      this.arduinos.push({
+        x: 50,
+        y: 50,
+        id: uuid1()
+      });
     }
   },
   data() {
     return {
       nodes: [],
       lines: [],
-      dragging: {}
+      arduinos: [],
+      dragging: {},
+      groupData: {}
     };
   }
 };
@@ -246,7 +286,7 @@ export default {
   z-index: 5;
 }
 /* .make { */
-  /* background: #409EFF;
+/* background: #409EFF;
   color: white; */
 /* } */
 .main {
