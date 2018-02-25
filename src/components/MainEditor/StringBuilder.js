@@ -29,5 +29,5 @@ export default function generate(arr) {
 
   let str = ""
   str += stringp.start
-  return str
+  return executionOrder
 }

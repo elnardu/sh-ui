@@ -278,7 +278,14 @@ export default {
           e.inputsArr.push(out.fid);
         });
       });
-      console.log(generate(this.nodes));
+      let obj = generate(this.nodes);
+      console.log(obj);
+      axios.post('/api/compile', {
+        obj: obj,
+        token: this.$store.state.token
+      }).then(res => {
+        console.log(res.data.result)
+      })
     },
     save() {
       axios
