@@ -1,3 +1,7 @@
+[Screenshots](https://devpost.com/software/home-editor)
+
+[Demo](https://homeeditor.org) (login: demo, password: demo)
+
 # Inspiration
 Macular degeneration has over 200,000 reported cases each year and there are many more people who have vision loss or are legally blind. Sensorineural Hearing Loss accounts for 90% of all hearing loss. The progressive or sudden loss of primary senses can be traumatizing and difficult. Our goal is to provide affordable, durable, and accessible support in the homes of those with sensory loss.
 
